@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>S3 POST Form</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+
+  <body>
+    <select id="formType">
+      <option value="" selected>Select one...</option>
+      <option value="consent-form">Consent Form</option>
+      <option value="laboratory-form">Laboratory Form</option>
+      <option value="requisition-form">Requisition Form</option>
+    </select>
+    <form action="%BUCKET_URL%" method="post" enctype="multipart/form-data" onsubmit="return false">
+      <input type="hidden" name="Content-Type" value="multipart/form-data">
+      <input type="hidden" name="AWSAccessKeyId" value="%AWS_ACCESS_KEY%">
+      <input type="hidden" name="acl" value="public-read">
+      <input type="hidden" name="success_action_status" value="201">
+      <input type="hidden" name="policy" value="%POLICY_BASE64%">
+      <input type="hidden" name="signature" value="%SIGNATURE%">
+
+      Destination filename: <input type="text" name="key" id="key" value="upload.pdf">
+      <br>
+      File to upload to S3:
+      <input name="file" type="file" id="file" onchange="updateKey()">
+      <br>
+      <input type="submit" value="Upload File to S3">
+    </form>
+    <script>
+      function updateKey() {
+        var filepath = document.getElementById('file').value;
+        var number = filepath.lastIndexOf("\\");
+        console.log(number);
+        var filename = filepath.substring(number+1);
+        console.log(filename);
+        var formType = document.getElementById('formType');
+        document.getElementById('key').value = formType.value + "-" + filename;
+        // console.log(document.getElementById('file'));
+      }
+    </script>
+  </body>
+</html>
